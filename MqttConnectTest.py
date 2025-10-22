@@ -10,4 +10,6 @@ PORT = 1883
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.connect(HOST, PORT, 60)
-client.loop_start() 
+client.loop_start()
+# Test of git
+ 
