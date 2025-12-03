@@ -1,5 +1,7 @@
+from MyStromSwitch_with_class import Plug
 import paho.mqtt.client as mqtt
-
+import time
+import requests
 
 def on_connect(client, userdata, flags, reasonCode, properties):
     print("Connected with result code:", reasonCode)
@@ -11,5 +13,14 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.connect(HOST, PORT, 60)
 client.loop_start()
-# Test of git
- 
+
+plug = Plug("192.168.0.152")
+
+while True:
+    plug.update_status()
+
+    plug.update_temperature()
+
+    plug.set_switch()
+
+    time.sleep(10)
