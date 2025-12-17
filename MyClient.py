@@ -24,13 +24,13 @@ class MyClient:
         self.client.subscribe(f"plug/{self.plug.ip_address}/relay/set")
     
     def publish_temperature(self, temperature):
-        self.client.publish(f"plug/{self.plug.ip_address}/temperature", f'{{"temperature": {temperature}}}', qos=0)
+        self.client.publish(f"plug/{self.plug.ip_address}/temperature", f'{{{temperature}}}', qos=0)
     
     def publish_power(self, power):
-        self.client.publish(f"plug/{self.plug.ip_address}/power", f'{{"power": {power}}}', qos = 0)
+        self.client.publish(f"plug/{self.plug.ip_address}/power", f'{{{power}}}', qos = 0)
     
     def publish_relay_status(self, relay_status):
-        self.client.publish(f"plug/{self.plug.ip_address}/relay/status", f'{{"status": {relay_status}}}', qos = 0)
+        self.client.publish(f"plug/{self.plug.ip_address}/relay/status", f'{{{relay_status}}}', qos = 0)
 
     def on_relay_set(self, client, userdata, msg):
         command = msg.payload.decode()

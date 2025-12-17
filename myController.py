@@ -12,6 +12,8 @@ class MyController:
     def __init__(self, ip_address_broker, ip_address_plug):
         self.ip_address_broker = ip_address_broker
         self.ip_address_plug = ip_address_plug
+        self.status = None
+        self.temperature = None
         self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
         self.client.on_connect = self.on_connect
         self.client.connect(ip_address_broker, 1883, 60)
@@ -26,23 +28,32 @@ class MyController:
         client.subscribe(f"plug/{self.ip_address_plug}/temperature")
 
     def on_status(self, client, userdata, msg):
-        status = msg.payload.decode()
-        print(f"Statut du relais: {status}")
+        self.status = msg.payload.decode()
     
     def on_temperature(self, client, userdata, msg):
-        temperature = msg.payload.decode()
-        print(f"Temperature: {temperature}")
+        self.temperature = msg.payload.decode()
 
-    def set_switch(self, state=None):
-        
-        self.client.publish(f"plug/{self.plug.ip_address}/relay/set", f'{{"power": {power}}}', qos = 0)
+    def read_status(self):
+        return self.status
+
+    def set_switch(self, state):
+        if self.status == "open":
+            self.client.publish(f"plug/{self.ip_address_plug}/relay/set", "close", qos = 0)
+        else:
+            self.client.publish(f"plug/{self.ip_address_plug}/relay/set", "open", qos = 0)
 
 # Example usage
 if __name__ == "__main__": 
 
     # Définition du client MQTT
     myController = MyController(ip_address_broker, ip_address_plug)
+    state = "open"
 
     while True:
 
-        time.sleep(1)
+
+        print(f"Statut: {myController.read_status()}")
+
+        myController.set_switch()
+
+        time.sleep(10)
