@@ -1,46 +1,50 @@
 import requests
 import time
 
+class MyStromSwitch:
 
-myPlug = "192.168.0.152"
+    def __init__(self, ip_address):
+        self.ip_address = ip_address
+        self.status = None
+        self.temperature = None
+        self.state = None
 
-def read_status():
-   url = "http://"+myPlug+"/report"
-   response = requests.get(url)
-   status = response.json()
-   return status
+    def read_status(self):
+        url = "http://"+self.ip_address+"/report"
+        response = requests.get(url)
+        self.status = response.json()
+        return self.status
+
+    def read_temperature(self):
+        url = "http://"+self.ip_address+"/temp"
+        response = requests.get(url)
+        self.temperature = response.json()
+        return self.temperature
 
 
-def read_temperature():
-   url = "http://"+myPlug+"/temp"
-   response = requests.get(url)
-   temperature = response.json()
-   return temperature
-
-
-def set_switch(state= None):
-   if state not in [0, 1, None]:
-       print("Invalid state. Use '0' or '1' (or leave empty to toggle)")
-       return
-   if state is None:
-       url = f"http://{myPlug}/toggle"
-   if state in [0, 1]:
-       url = f"http://{myPlug}/relay?state={state}"
-   response = requests.get(url)
-   return
-
+    def set_switch(self, state= None):
+        if state not in [0, 1, None]:
+            print("Invalid state. Use '0' or '1' (or leave empty to toggle)")
+            return
+        if state is None:
+            url = f"http://{self.ip_address}/toggle"
+        if state in [0, 1]:
+            url = f"http://{self.ip_address}/relay?state={state}"
+            self.state = state
+        response = requests.get(url)
+        return
 
 # Example usage
-while True:
-   status = read_status()
-   print(status)
+if __name__ == "__main__": 
 
+    myPlug = MyStromSwitch("192.168.0.152")
 
-   temperature = read_temperature()
-   print(temperature)
+    while True:
+    
+        print(myPlug.read_status())
 
+        print(myPlug.read_temperature())
 
-   set_switch()
+        myPlug.set_switch()
 
-
-   time.sleep(10)
+        time.sleep(10)
