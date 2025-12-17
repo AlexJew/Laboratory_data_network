@@ -16,11 +16,14 @@ class MyStromSwitch:
         return self.status
 
     def read_temperature(self):
-        url = "http://"+self.ip_address+"/temp"
-        response = requests.get(url)
-        self.temperature = response.json()
+        self.read_status()
+        self.temperature = self.status['temperature']
         return self.temperature
-
+    
+    def read_power(self):
+        self.read_status()
+        self.power = self.status['power']
+        return self.power
 
     def set_switch(self, state= None):
         if state not in [0, 1, None]:
@@ -45,6 +48,10 @@ if __name__ == "__main__":
 
         print(myPlug.read_temperature())
 
+        time.sleep(1)
+
+        print(myPlug.read_power())
+
         myPlug.set_switch()
 
-        time.sleep(10)
+        time.sleep(1)
