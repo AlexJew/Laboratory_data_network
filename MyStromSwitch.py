@@ -4,7 +4,6 @@ import time
 
 myPlug = "192.168.0.152"
 
-
 def read_status():
    url = "http://"+myPlug+"/report"
    response = requests.get(url)
